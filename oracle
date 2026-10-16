@@ -5,10 +5,18 @@ COMPOSE_DIR="$(dirname $SCRIPT_DIR)"
 
 
 case "$1" in 
-    start)  
-        podman compose -f "$COMPOSE_DIR/compose.yaml" up oracle-free -d
-        echo "starting oracle26ai ..." ;; 
-    stop)
+    
+start)
+    podman compose -f "$COMPOSE_DIR/compose.yaml" up oracle-free -d
+    echo "Starting Oracle 26ai..."
+
+    until [[ "$(podman inspect -f '{{.State.Health.Status}}' oracle-free)" == "healthy" ]]; do
+        sleep 2
+    done
+
+    echo "Oracle Database is healthy and ready."
+    ;;
+stop)
         podman compose -f "$COMPOSE_DIR/compose.yaml" down
         echo "stopping oracle26ai" ;;
     *)  echo "usage: oracle start/end";;
