@@ -23,5 +23,6 @@ if [[ -f "$file" ]]; then
 
     sqlcl "@/work/$sql_name"
 else
+	MOUNT_ARGS=(-v "$PWD:/work:ro,Z" -w /work)	
     sqlcl
 fi
